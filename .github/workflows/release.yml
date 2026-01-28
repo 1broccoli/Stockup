@@ -38,9 +38,9 @@ jobs:
       - name: Upload to CurseForge
         if: secrets.CURSEFORGE_API_TOKEN != ''
         run: |
-          PROJECT_ID=${{ secrets.CURSEFORGE_PROJECT_ID }}
-          API_TOKEN=${{ secrets.CURSEFORGE_API_TOKEN }}
-          VERSION=${{ steps.tag_name.outputs.version }}
+          PROJECT_ID="1447101"
+          API_TOKEN="${{ secrets.CURSEFORGE_API_TOKEN }}"
+          VERSION="${{ steps.tag_name.outputs.version }}"
           
           curl -X POST \
             -H "X-Api-Token: ${API_TOKEN}" \

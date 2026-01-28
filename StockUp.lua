@@ -26,7 +26,7 @@ local GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo or
 local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
 
 -- Addon namespace
-addon.version = "1.0.1"
+addon.version = "1.0.2"
 
 -- Make addon globally accessible early for Database.lua
 _G.StockUp = addon
@@ -196,6 +196,7 @@ local defaults = {
 		playerName = nil, -- Character name
 		playerRealm = nil, -- Realm name
 		lastLogin = nil, -- Last login timestamp
+		firstTimeSetup = false, -- Flag to show config on first login
 	},
 }
 
@@ -231,6 +232,15 @@ function addon:OnInitialize()
 	end
 	
 	self:Print("StockUp v" .. self.version .. " loaded for |cff00ff00" .. className .. "|r. Type /su to configure.")
+	
+	-- Show config dialog on first login if not yet configured
+	if not self.db.char.firstTimeSetup then
+		self:ScheduleTimer(function()
+			self:Print("|cff00ff00First time setup:|r Opening configuration panel...")
+			self:OpenConfigDialog()
+			self.db.char.firstTimeSetup = true
+		end, 2)
+	end
 	
 	-- Show vendor info for reagents if database is available
 	if self.Database and #self.classReagents > 0 then

@@ -1,5 +1,10 @@
 # StockUp - Changes & Features
 
+## Version 1.0.2 - First-Time Setup & Config Dialog
+- **First-time setup dialog**: Configuration panel now opens automatically on first login so users can set their preferences before any auto-purchases happen
+- **One-time setup flag**: Once you configure settings, the dialog won't appear again unless you want to reconfigure manually
+- Improved onboarding experience for new users
+
 ## Version 1.0.1 - Bug Fixes
 - **Fixed purchase quantity calculation**: Addon now correctly purchases the exact amount you set (e.g., if you want 300 total and have 275, it buys exactly 25)
 - **Fixed slider step constraint**: You can now set any custom amount for reagents (previously limited to vendor stack size increments)

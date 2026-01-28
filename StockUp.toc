@@ -2,7 +2,7 @@
 ## Title: StockUp - TBC
 ## Notes: Automatically purchases class-specific reagents from vendors
 ## Author: YourName
-## Version: 1.0.1
+## Version: 1.0.2
 ## SavedVariables: StockUpDB
 ## SavedVariablesPerCharacter: StockUpCharDB
 ## OptionalDeps: Ace3, LibStub, LibDBIcon-1.0, Questie

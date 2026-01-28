@@ -152,11 +152,11 @@ function addon:BuildReagentOptions()
 				local icon = select(10, GetItemInfo(reagent.itemID)) or "Interface\\Icons\\INV_Misc_QuestionMark"
 				return "|T" .. icon .. ":20|t " .. reagent.name
 			end,
-			desc = "How many " .. reagent.name .. " to keep in stock (Level " .. (reagent.minLevel or "?") .. " reagent)" .. vendorInfo .. (reagent.stackSize > 1 and "\n|cffaaaaaa(Sold in stacks of " .. reagent.stackSize .. ")|r" or ""),
+			desc = "How many " .. reagent.name .. " to keep in stock (Level " .. (reagent.minLevel or "?") .. " reagent)" .. vendorInfo .. (reagent.stackSize > 1 and "\n|cffaaaaaa(Vendor sells in stacks of " .. reagent.stackSize .. ")|r" or ""),
 			icon = itemIcon,
 			min = 0,
 			max = 500,
-			step = reagent.stackSize or 1,  -- Use actual stack size for slider increments
+			step = 1,  -- Allow any amount, not limited to vendor stack size
 			get = function()
 				-- Return custom amount if set, otherwise default
 				return addon.db.profile.customAmounts[reagent.itemID] or addon.db.profile.purchaseAmount

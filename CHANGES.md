@@ -1,6 +1,13 @@
 # StockUp - Changes & Features
 
-## Current Version Features
+## Version 1.0.1 - Bug Fixes
+- **Fixed purchase quantity calculation**: Addon now correctly purchases the exact amount you set (e.g., if you want 300 total and have 275, it buys exactly 25)
+- **Fixed slider step constraint**: You can now set any custom amount for reagents (previously limited to vendor stack size increments)
+- **Fixed partial purchases**: Items are now purchased in a single transaction instead of individual loop calls
+
+
+
+##  Version Features 1.0.0
 
 ### Core Functionality
 - Automatic reagent purchasing from vendors

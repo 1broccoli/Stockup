@@ -26,7 +26,7 @@ local GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo or
 local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
 
 -- Addon namespace
-addon.version = "1.0.0"
+addon.version = "1.0.1"
 
 -- Make addon globally accessible early for Database.lua
 _G.StockUp = addon
@@ -524,17 +524,13 @@ function addon:ProcessMerchantPurchase(autoBuyEnabled)
 			end
 			
 			if amountToBuy > 0 then
-				-- Calculate stacks needed (each vendor item might be a stack)
-				local stackSize = quantity or 1
-				local stacksToBuy = math.ceil(amountToBuy / stackSize)
-				local totalItems = stacksToBuy * stackSize
-				local cost = price * stacksToBuy
+				-- Buy individual items (quantity is vendor stack size, not relevant to purchase amount)
+				local cost = price * amountToBuy
 				
 				table.insert(purchaseList, {
 					slot = vendorSlot,
 					reagent = reagent,
-					stacks = stacksToBuy,
-					totalItems = totalItems,
+					quantity = amountToBuy,
 					cost = cost,
 				})
 				
@@ -586,7 +582,7 @@ function addon:ProcessMerchantPurchase(autoBuyEnabled)
 				if itemTexture ~= "" then
 					itemList = itemList .. "|T" .. itemTexture .. ":20|t "
 				end
-				itemList = itemList .. purchase.totalItems .. "x " .. purchase.reagent.name .. " |cffffffff(" .. self:FormatMoneyWithIcons(purchase.cost) .. ")|r\n"
+				itemList = itemList .. purchase.quantity .. "x " .. purchase.reagent.name .. " |cffffffff(" .. self:FormatMoneyWithIcons(purchase.cost) .. ")|r\n"
 			end
 			
 			frame.icon:SetTexture("Interface\\Icons\\INV_Misc_Bag_07")
@@ -613,7 +609,7 @@ function addon:ProcessMerchantPurchase(autoBuyEnabled)
 			
 			frame.icon:SetTexture(itemTexture)
 			frame.text:SetText("Purchase reagent for |cffffffff" .. self:FormatMoneyWithIcons(totalCost) .. "|r?")
-			frame.itemList:SetText(purchase.totalItems .. "x |cff00ff00" .. purchase.reagent.name .. "|r")
+		frame.itemList:SetText(purchase.quantity .. "x |cff00ff00" .. purchase.reagent.name .. "|r")
 			frame.buyEachButton:Hide()
 			
 			frame.buyButton:SetScript("OnClick", function()
@@ -655,7 +651,7 @@ function addon:ShowNextPurchaseDialog()
 	frame:SetLayout(false)
 	frame.icon:SetTexture(itemTexture)
 	frame.text:SetText("Purchase for |cffffffff" .. self:FormatMoneyWithIcons(purchase.cost) .. "|r?")
-	frame.itemList:SetText(purchase.totalItems .. "x |cff00ff00" .. purchase.reagent.name .. "|r\n\n|cffaaaaaa(" .. self.currentPurchaseIndex .. " of " .. #purchaseList .. ")|r")
+	frame.itemList:SetText(purchase.quantity .. "x |cff00ff00" .. purchase.reagent.name .. "|r\n\n|cffaaaaaa(" .. self.currentPurchaseIndex .. " of " .. #purchaseList .. ")|r")
 	
 	-- Change button layout for individual mode
 	frame.buyButton:SetText("Buy")
@@ -700,12 +696,10 @@ function addon:ExecuteSinglePurchase(purchase)
 	end
 	
 	-- Purchase this item
-	for i = 1, purchase.stacks do
-		BuyMerchantItem(purchase.slot, 1)
-	end
+	BuyMerchantItem(purchase.slot, purchase.quantity)
 	
 	if self.db.profile.showMessages then
-		self:Print("  - " .. purchase.totalItems .. "x |cff00ff00" .. purchase.reagent.name .. "|r (" .. self:FormatMoney(purchase.cost) .. ")")
+		self:Print("  - " .. purchase.quantity .. "x |cff00ff00" .. purchase.reagent.name .. "|r (" .. self:FormatMoney(purchase.cost) .. ")")
 	end
 	return true
 end
@@ -733,13 +727,11 @@ function addon:ExecutePurchase(purchaseData)
 	end
 	
 	for _, purchase in ipairs(purchaseList) do
-		-- Buy the items
-		for i = 1, purchase.stacks do
-			BuyMerchantItem(purchase.slot, 1)
-		end
+		-- Buy all items in one transaction
+		BuyMerchantItem(purchase.slot, purchase.quantity)
 		
 		if self.db.profile.showMessages then
-			self:Print("  - " .. purchase.totalItems .. "x |cff00ff00" .. purchase.reagent.name .. "|r (" .. self:FormatMoney(purchase.cost) .. ")")
+			self:Print("  - " .. purchase.quantity .. "x |cff00ff00" .. purchase.reagent.name .. "|r (" .. self:FormatMoney(purchase.cost) .. ")")
 		end
 	end
 	

@@ -219,3 +219,5 @@ This dual-storage system ensures you never accidentally buy the wrong reagents o
 
 Created with Ace3 addon framework
 Database integration using Questie NPC/Item/Object data
+
+<img width="553" height="942" alt="image" src="https://github.com/user-attachments/assets/b2c620fe-e5d8-4f6f-a16b-781c4f2c321a" />

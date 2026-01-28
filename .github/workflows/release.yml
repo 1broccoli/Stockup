@@ -1,0 +1,50 @@
+name: Release to CurseForge
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Get version from tag
+        id: tag_name
+        run: |
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            README.md
+            CHANGES.md
+          body_path: CHANGES.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Package addon
+        run: |
+          mkdir -p build/StockUp
+          cp -r StockUp.lua Config.lua Database.lua Minimap.lua StockUp.toc StockUp_Classic.toc StockUp_TBC.toc Libs/ Db/ Media/ build/StockUp/
+          cd build
+          zip -r ../StockUp-${{ steps.tag_name.outputs.version }}.zip StockUp/
+      
+      - name: Upload to CurseForge
+        if: secrets.CURSEFORGE_API_TOKEN != ''
+        run: |
+          PROJECT_ID=${{ secrets.CURSEFORGE_PROJECT_ID }}
+          API_TOKEN=${{ secrets.CURSEFORGE_API_TOKEN }}
+          VERSION=${{ steps.tag_name.outputs.version }}
+          
+          curl -X POST \
+            -H "X-Api-Token: ${API_TOKEN}" \
+            -F "metadata={\"changelog\":\"Version ${VERSION} - Check GitHub releases for details\",\"changelogType\":\"text\",\"displayName\":\"v${VERSION}\",\"gameVersions\":[1,430]}" \
+            -F "file=@StockUp-${VERSION}.zip" \
+            https://wow.curseforge.com/api/projects/${PROJECT_ID}/upload-file
+

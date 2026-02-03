@@ -42,10 +42,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to CurseForge
+        if: ${{ secrets.CURSEFORGE_API_TOKEN != '' }}
         run: |
           curl -X POST \
             -H "X-API-Token: ${{ secrets.CURSEFORGE_API_TOKEN }}" \
             -F "metadata={\"changelog\":\"Version ${{ steps.version.outputs.VERSION }}\",\"changelogType\":\"text\",\"displayName\":\"${{ steps.version.outputs.VERSION }}\",\"releaseType\":\"release\"}" \
             -F "file=@StockUp.zip" \
             https://www.curseforge.com/api/projects/1447101/upload-file
-        if: secrets.CURSEFORGE_API_TOKEN != ''

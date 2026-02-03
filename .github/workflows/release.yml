@@ -44,8 +44,8 @@ jobs:
       - name: Upload to CurseForge
         run: |
           curl -X POST \
-            -H "X-API-Token: ${{ secrets.CURSEFORGE_TOKEN }}" \
+            -H "X-API-Token: ${{ secrets.CURSEFORGE_API_TOKEN }}" \
             -F "metadata={\"changelog\":\"Version ${{ steps.version.outputs.VERSION }}\",\"changelogType\":\"text\",\"displayName\":\"${{ steps.version.outputs.VERSION }}\",\"releaseType\":\"release\"}" \
             -F "file=@StockUp.zip" \
             https://www.curseforge.com/api/projects/1447101/upload-file
-        if: env.CURSEFORGE_TOKEN != ''
+        if: secrets.CURSEFORGE_API_TOKEN != ''

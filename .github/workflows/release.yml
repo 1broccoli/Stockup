@@ -1,0 +1,54 @@
+name: Release to CurseForge
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create Release Package
+        run: |
+          # Create a zip file of the addon
+          zip -r StockUp.zip . -x ".git/*" ".github/*" "*.md" ".gitignore"
+
+      - name: Get Version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          release_name: Version ${{ steps.version.outputs.VERSION }}
+          body_path: CHANGES.md
+          draft: false
+          prerelease: false
+
+      - name: Upload to CurseForge
+        run: |
+          CHANGELOG=$(sed -n '/^## Version ${{ steps.version.outputs.VERSION }}/,/^## Version/p' CHANGES.md | head -n -1)
+          
+          curl -X POST \
+            -H "X-API-Token: ${{ secrets.CURSEFORGE_TOKEN }}" \
+            -F "metadata={\"changelog\":\"$CHANGELOG\",\"changelogType\":\"markdown\",\"displayName\":\"${{ steps.version.outputs.VERSION }}\",\"gameVersions\":[],\"releaseType\":\"release\"}" \
+            -F "file=@StockUp.zip" \
+            https://www.curseforge.com/api/projects/1447101/upload-file
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./StockUp.zip
+          asset_name: StockUp-${{ steps.version.outputs.VERSION }}.zip
+          asset_content_type: application/zip

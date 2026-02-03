@@ -177,7 +177,7 @@ local REAGENT_DATA = {
 local defaults = {
 	profile = {
 		enabled = true,
-		autoBuy = true,
+		autoBuy = false, -- Disabled by default until user enables it
 		purchaseAmount = 20, -- Default amount to purchase per reagent
 		showMessages = true, -- Show chat messages
 		minimap = {
@@ -219,6 +219,9 @@ function addon:OnInitialize()
 	-- Store/verify per-character data
 	self:VerifyCharacterData()
 	
+	-- Initialize first-time reagent defaults
+	self:InitializeFirstTimeReagents()
+	
 	-- Register chat commands
 	self:RegisterChatCommand("su", "ChatCommand")
 	self:RegisterChatCommand("stockup", "ChatCommand")
@@ -233,14 +236,8 @@ function addon:OnInitialize()
 	
 	self:Print("StockUp v" .. self.version .. " loaded for |cff00ff00" .. className .. "|r. Type /su to configure.")
 	
-	-- Show config dialog on first login if not yet configured
-	if not self.db.char.firstTimeSetup then
-		self:ScheduleTimer(function()
-			self:Print("|cff00ff00First time setup:|r Opening configuration panel...")
-			self:OpenConfigDialog()
-			self.db.char.firstTimeSetup = true
-		end, 2)
-	end
+	-- Show info message about auto-buy being disabled
+	self:Print("|cffff0000Auto-Buy is currently |cffff0000DISABLED|r. Enable it in the config when ready.")
 	
 	-- Show vendor info for reagents if database is available
 	if self.Database and #self.classReagents > 0 then
@@ -295,6 +292,31 @@ end
 --[[
 	Initialize reagent data for the player's class
 ]]--
+--[=[
+	Initialize first-time reagent defaults
+	Sets starting amounts to 10 for all reagents, except Symbol of Kings (100 for Paladins)
+]=]--
+function addon:InitializeFirstTimeReagents()
+	if not self.db.char.firstTimeSetup then
+		-- Initialize custom amounts with starting values
+		local classReagents = REAGENT_DATA[self.playerClass] or {}
+		
+		for _, reagent in ipairs(classReagents) do
+			-- Symbol of Kings (21177) gets 100, all others get 10
+			if reagent.itemID == 21177 then
+				self.db.profile.customAmounts[reagent.itemID] = 100
+				self.db.profile.selectedReagents[reagent.itemID] = true
+			else
+				self.db.profile.customAmounts[reagent.itemID] = 10
+				self.db.profile.selectedReagents[reagent.itemID] = true
+			end
+		end
+		
+		-- Mark first-time setup as complete
+		self.db.char.firstTimeSetup = true
+	end
+end
+
 function addon:InitializeClassReagents()
 	self.classReagents = REAGENT_DATA[self.playerClass] or {}
 	

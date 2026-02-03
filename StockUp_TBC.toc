@@ -2,12 +2,13 @@
 ## Title: StockUp
 ## Notes: Automatically purchases class-specific reagents from vendors
 ## Author: Pegga
-## Version: 1.0.2
+## Version: 1.0.3
 ## SavedVariables: StockUpDB
 ## SavedVariablesPerCharacter: StockUpCharDB
 ## OptionalDeps: Ace3, LibStub, LibDBIcon-1.0, Questie
 ## Website: https://www.curseforge.com/members/pegga/
 ## https://github.com/1broccoli/Stockup
+## X-Curse-Project-ID: 1447101
 ## IconTexture: Interface\AddOns\StockUp\Media\stockup.blp
 
 # Libraries

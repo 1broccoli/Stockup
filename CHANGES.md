@@ -1,5 +1,11 @@
 # StockUp - Changes & Features
 
+## Version 1.0.3 - Safe First-Time Setup
+- **Auto-Buy disabled by default**: Addon now starts with Auto-Buy disabled to prevent accidental purchases on first login
+- **Smart first-time reagent defaults**: Starting purchase amounts automatically set to 10 for all reagents (100 for Paladin's Symbol of Kings)
+- **Safer onboarding**: Users must explicitly enable Auto-Buy in settings before any automatic purchases occur
+- **Added CurseForge project ID**: Metadata added for better CurseForge integration
+
 ## Version 1.0.2 - First-Time Setup & Config Dialog
 - **First-time setup dialog**: Configuration panel now opens automatically on first login so users can set their preferences before any auto-purchases happen
 - **One-time setup flag**: Once you configure settings, the dialog won't appear again unless you want to reconfigure manually

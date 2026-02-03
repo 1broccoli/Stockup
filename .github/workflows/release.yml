@@ -42,7 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to CurseForge
-        if: ${{ secrets.CURSEFORGE_API_TOKEN != '' }}
         run: |
           curl -X POST \
             -H "X-API-Token: ${{ secrets.CURSEFORGE_API_TOKEN }}" \

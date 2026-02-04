@@ -1,5 +1,15 @@
 # StockUp - Changes & Features
 
+## Version 1.0.5 - Bug Fixes
+- **Fixed empty purchase popup**: Purchase confirmation dialog now properly displays item name and quantity
+- **Removed non-vendor reagents**: Removed Fish Oil and Shiny Fish Scales from Shaman reagents (not sold by vendors)
+- **Only Ankh for Shamans**: Shaman reagents now limited to Ankh which is available from vendors
+
+## Version 1.0.4 - Quiet Mode
+- **Suppress Login Messages**: New checkbox to disable print messages on login (quiet/light mode)
+- Useful for users who prefer a clean chat log on startup
+- Disabled by default to maintain familiar behavior
+
 ## Version 1.0.3 - Safe First-Time Setup
 - **Auto-Buy disabled by default**: Addon now starts with Auto-Buy disabled to prevent accidental purchases on first login
 - **Smart first-time reagent defaults**: Starting purchase amounts automatically set to 10 for all reagents (100 for Paladin's Symbol of Kings)

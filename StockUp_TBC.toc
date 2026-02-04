@@ -2,7 +2,7 @@
 ## Title: StockUp
 ## Notes: Automatically purchases class-specific reagents from vendors
 ## Author: Pegga
-## Version: 1.0.3
+## Version: 1.0.5
 ## SavedVariables: StockUpDB
 ## SavedVariablesPerCharacter: StockUpCharDB
 ## OptionalDeps: Ace3, LibStub, LibDBIcon-1.0, Questie

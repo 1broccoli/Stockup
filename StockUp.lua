@@ -26,7 +26,7 @@ local GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo or
 local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
 
 -- Addon namespace
-addon.version = "1.0.2"
+addon.version = "1.0.4"
 
 -- Make addon globally accessible early for Database.lua
 _G.StockUp = addon
@@ -97,6 +97,8 @@ local function CreatePurchaseFrame()
 			self.scrollFrame:SetPoint("TOPLEFT", 20, -115)
 			self.scrollFrame:SetPoint("BOTTOMRIGHT", -40, 70)
 		end
+		-- Reset scroll position
+		self.scrollFrame:SetVerticalScroll(0)
 	end
 	
 	-- Buy All button
@@ -126,6 +128,11 @@ local function CreatePurchaseFrame()
 	frame.closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 	frame.closeButton:SetPoint("TOPRIGHT", 0, 0)
 	
+	-- Reset function to clean up frame state between uses
+	function frame:ResetFrame()
+		self.scrollFrame:SetVerticalScroll(0)
+	end
+	
 	return frame
 end
 
@@ -153,8 +160,6 @@ local REAGENT_DATA = {
 	},
 	SHAMAN = {
 		{itemID = 17030, name = "Ankh", minLevel = 30, spellID = 20608, stackSize = 1}, -- Reincarnation
-		{itemID = 17058, name = "Fish Oil", minLevel = 58, spellID = 10538, stackSize = 1}, -- Greater Fire Resistance Totem
-		{itemID = 17057, name = "Shiny Fish Scales", minLevel = 56, spellID = 10472, stackSize = 1}, -- Greater Frost Resistance Totem
 	},
 	DRUID = {
 		{itemID = 17034, name = "Maple Seed", minLevel = 40, spellID = 21849, stackSize = 1}, -- Gift of the Wild I
@@ -180,6 +185,7 @@ local defaults = {
 		autoBuy = false, -- Disabled by default until user enables it
 		purchaseAmount = 20, -- Default amount to purchase per reagent
 		showMessages = true, -- Show chat messages
+		suppressLoginMessages = false, -- Suppress login print messages (quiet/light mode)
 		minimap = {
 			hide = false,
 		},
@@ -234,16 +240,19 @@ function addon:OnInitialize()
 		self.Database:Initialize()
 	end
 	
-	self:Print("StockUp v" .. self.version .. " loaded for |cff00ff00" .. className .. "|r. Type /su to configure.")
-	
-	-- Show info message about auto-buy being disabled
-	self:Print("|cffff0000Auto-Buy is currently |cffff0000DISABLED|r. Enable it in the config when ready.")
-	
-	-- Show vendor info for reagents if database is available
-	if self.Database and #self.classReagents > 0 then
-		self:ScheduleTimer(function()
-			self:Print("Reagent vendors loaded for your class.")
-		end, 1)
+	-- Check if login messages should be suppressed (light/quiet mode)
+	if not self.db.profile.suppressLoginMessages then
+		self:Print("StockUp v" .. self.version .. " loaded for |cff00ff00" .. className .. "|r. Type /su to configure.")
+		
+		-- Show info message about auto-buy being disabled
+		self:Print("|cffff0000Auto-Buy is currently |cffff0000DISABLED|r. Enable it in the config when ready.")
+		
+		-- Show vendor info for reagents if database is available
+		if self.Database and #self.classReagents > 0 then
+			self:ScheduleTimer(function()
+				self:Print("Reagent vendors loaded for your class.")
+			end, 1)
+		end
 	end
 end
 
@@ -651,6 +660,7 @@ function addon:ProcessMerchantPurchase(autoBuyEnabled)
 			end)
 		end
 		
+		frame:ResetFrame()
 		frame:Show()
 		return
 	end

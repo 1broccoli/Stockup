@@ -1,5 +1,5 @@
-## Interface: 20504
-## Title: StockUp - TBC
+## Interface: 11500, 20504
+## Title: StockUp
 ## Notes: Automatically purchases class-specific reagents from vendors
 ## Author: Pegga
 ## Version: 1.0.5

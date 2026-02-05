@@ -1,11 +1,15 @@
 # StockUp - Changes & Features
 
+## Version 1.0.6 - Unified .toc Files
+- **Consolidated .toc files**: Combined StockUp_Classic.toc and StockUp_TBC.toc into single StockUp.toc supporting both Classic (11500) and TBC (20504)
+- Single addon file now supports both game versions automatically
+
 ## Version 1.0.5 - Bug Fixes
 - **Fixed empty purchase popup**: Purchase confirmation dialog now properly displays item name and quantity
 - **Removed non-vendor reagents**: Removed Fish Oil and Shiny Fish Scales from Shaman reagents (not sold by vendors)
 - **Only Ankh for Shamans**: Shaman reagents now limited to Ankh which is available from vendors
 
-## Version 1.0.4 - Quiet Mode
+## Version 1.0.4 - Quiet Modeg
 - **Suppress Login Messages**: New checkbox to disable print messages on login (quiet/light mode)
 - Useful for users who prefer a clean chat log on startup
 - Disabled by default to maintain familiar behavior
